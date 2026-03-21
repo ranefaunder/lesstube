@@ -1,40 +1,58 @@
-/* Header */
+/* ===== HEADER ===== */
+
+/* Hide voice search button */
 #voice-search-button {
   display: none;
 }
 
+/* Hide hamburger/guide button */
 #masthead-container #container #start #guide-button {
   display: none;
 }
 
-#dismissible {
-  display: none;
-}
+/* ===== SIDE NAVIGATION ===== */
 
-/* Side */
+/* Remove left margin from page content (no guide rail) */
 #page-manager {
   margin-left: 0 !important;
 }
 
+/* Hide the mini guide and full guide */
 ytd-mini-guide-renderer,
 #guide-inner-content {
   display: none;
 }
 
-/* Shorts */
+/* ===== SHORTS ===== */
+
+/* Hide Shorts shelves everywhere */
+ytd-reel-shelf-renderer,
 grid-shelf-view-model {
   display: none !important;
 }
 
+/* ===== HOME PAGE ===== */
+
 [data-page-type="home"] {
+  /* Hide all homepage feed content */
+  ytd-rich-grid-renderer,
+  ytd-rich-item-renderer,
+  ytd-rich-section-renderer,
+  ytd-shelf-renderer {
+    display: none !important;
+  }
+
+  /* Hide everything in #content except the masthead */
   #content > :not(#masthead-container) {
     display: none;
   }
 
+  /* Hide right-side header buttons (notifications, avatar, etc.) */
   #masthead-container #container #end > * {
     display: none;
   }
 
+  /* Center the masthead as a search-engine style UI */
   #masthead-container {
     top: 40% !important;
     left: 50% !important;
@@ -53,10 +71,12 @@ grid-shelf-view-model {
     width: 100%;
   }
 
+  /* Enlarge logo */
   ytd-topbar-logo-renderer {
     scale: 1.5 !important;
   }
 
+  /* Make sure search box is visible */
   #masthead-container yt-searchbox,
   .ytSearchboxComponentInputBox {
     display: flex !important;
@@ -64,12 +84,21 @@ grid-shelf-view-model {
   }
 }
 
+/* ===== SEARCH RESULTS PAGE ===== */
+
 [data-page-type="search"] {
+  /* Hide chip filters bar */
   #chip-bar {
     display: none !important;
   }
 
+  /* Hide "About these results" */
   #about-these-results {
+    display: none !important;
+  }
+
+  /* Hide promoted search results / ads */
+  ytd-search-pyv-renderer {
     display: none !important;
   }
 
@@ -78,15 +107,87 @@ grid-shelf-view-model {
   }
 }
 
+/* ===== WATCH / VIDEO PAGE ===== */
+
 [data-page-type="watch"] {
-  #secondary-inner {
+  /* Hide recommendation suggestions but KEEP playlist panel visible */
+  ytd-watch-next-secondary-results-renderer {
+    display: none !important;
+  }
+
+  /* Hide ad slots in sidebar */
+  #secondary ytd-ad-slot-renderer {
     display: none !important;
   }
 }
 
+/* ===== END SCREENS & END CARDS (GLOBAL — must not be scoped) ===== */
+
+/* Nuke end screen elements with every hiding method available */
+.ytp-ce-element,
+.ytp-ce-covering-overlay,
+.ytp-ce-element-show,
+.ytp-ce-covering-image,
+.ytp-ce-channel,
+.ytp-ce-video,
+.ytp-ce-playlist,
+.ytp-ce-website,
+.ytp-endscreen-content,
+.html5-endscreen,
+.ytp-videowall-still,
+.ytp-modern-videowall-still,
+.ytp-endscreen-previous,
+.ytp-endscreen-next,
+.ytp-show-tiles-first {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Hide info cards (the "i" button and card teasers) */
+.ytp-cards-button,
+.ytp-cards-teaser,
+.ytp-card-content,
+.ytp-cards-button-icon,
+.iv-branding {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* ===== FULLSCREEN ENGAGEMENT BUTTONS ===== */
+
+/* Hide like, dislike, share, comment, Gemini buttons in fullscreen */
+.ytp-fullscreen button.yt-spec-button-shape-next--overlay,
+.ytp-fullscreen .ytp-fullscreen-grid-expand-button {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Also target the specific button containers in fullscreen */
+.html5-video-player.ytp-fullscreen .ytp-chrome-bottom-sb,
+.html5-video-player.ytp-fullscreen ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-comments-section"],
+.html5-video-player.ytp-fullscreen .ytp-suggested-action,
+.html5-video-player.ytp-fullscreen .ytp-suggested-action-badge {
+  display: none !important;
+}
+
+/* ===== CHANNEL PAGE ===== */
+
 [data-page-type="channel"] {
+  /* Hide Home and Shorts tabs on channel pages */
+  yt-tab-shape[tab-title="Home"],
+  yt-tab-shape[tab-title="Shorts"],
   [tab-title="Home"],
-  [tab-title="Shorts"] {
+  [tab-title="Shorts"],
+  tp-yt-paper-tab:has(> div[tab-title="Home"]),
+  tp-yt-paper-tab:has(> div[tab-title="Shorts"]) {
     opacity: 0 !important;
     pointer-events: none !important;
   }
