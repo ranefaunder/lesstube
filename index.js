@@ -4,7 +4,9 @@ function isHomePage() {
   return (
     window.location.pathname === "/" ||
     window.location.pathname === "/feed/trending" ||
-    window.location.pathname === "/feed/subscriptions"
+    window.location.pathname === "/feed/subscriptions" ||
+    window.location.pathname === "/feed/library" ||
+    window.location.pathname === "/feed/history"
   );
 }
 
@@ -14,7 +16,9 @@ function getPageType() {
   if (
     path === "/" ||
     path === "/feed/trending" ||
-    path === "/feed/subscriptions"
+    path === "/feed/subscriptions" ||
+    path === "/feed/library" ||
+    path === "/feed/history"
   ) {
     return "home";
   } else if (path.startsWith("/watch")) {
@@ -29,6 +33,8 @@ function getPageType() {
     return "channel";
   } else if (path.startsWith("/playlist")) {
     return "playlist";
+  } else if (path.startsWith("/shorts/")) {
+    return "shorts";
   } else {
     return "other";
   }
@@ -42,7 +48,7 @@ function redirectChannelToVideos() {
     path.match(/^\/channel\/[^\/]+$/) ||
     path.match(/^\/c\/[^\/]+$/)
   ) {
-    console.log("Redirecting from channel home to videos page");
+    console.log("LessTube: Redirecting channel to videos page");
     const videosUrl = window.location.href + "/videos";
     window.location.replace(videosUrl);
     return true;
@@ -54,7 +60,7 @@ function redirectShortsToWatch() {
   const path = window.location.pathname;
 
   if (path.match(/^\/shorts\/[^\/]+$/)) {
-    console.log("Redirecting from Shorts to regular watch page");
+    console.log("LessTube: Redirecting Shorts to regular watch page");
     const videoId = path.split("/")[2];
     const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
     window.location.replace(watchUrl);
@@ -72,29 +78,8 @@ function handleRedirects() {
 function setPageType() {
   const pageType = getPageType();
   document.body.setAttribute("data-page-type", pageType);
-  console.log(`Page type set: ${pageType} (${window.location.pathname})`);
+  console.log(`LessTube: Page type set to "${pageType}" (${window.location.pathname})`);
 }
-
-function initializePage() {
-  if (handleRedirects()) return;
-  setPageType();
-  setTimeout(addHomePageFooter, 100);
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initializePage);
-} else {
-  initializePage();
-}
-
-let lastUrl = location.href;
-new MutationObserver(() => {
-  const url = location.href;
-  if (url !== lastUrl) {
-    lastUrl = url;
-    setTimeout(initializePage, 500);
-  }
-}).observe(document, { subtree: true, childList: true });
 
 function addHomePageFooter() {
   document.getElementById("lesstube-footer")?.remove();
@@ -104,12 +89,68 @@ function addHomePageFooter() {
     const footer = document.createElement("div");
     footer.id = "lesstube-footer";
     footer.innerHTML = `
-        <p style="text-align: center; color: #606060; font-size: 13px;">
-            This page has been modified by <a href="https://github.com/lessmatter/lesstube" target="_blank" style="color: inherit;">LessTube</a> browser extension.<br>
-            Not affiliated with YouTube or Google. Made by <a href="https://bsky.app/profile/lessmatter.com" target="_blank" style="color: inherit;">Less Matter</a>.</small>
+        <p style="text-align: center; color: #999; font-size: 12px; margin-top: 32px; font-weight: 500; letter-spacing: 0.5px;">
+            Welcome to LessTube Human.
         </p>
     `;
 
-    document.getElementById("container")?.appendChild(footer);
+    // Try multiple possible containers for footer placement
+    const container =
+      document.getElementById("container") ||
+      document.querySelector("ytd-app") ||
+      document.body;
+    container.appendChild(footer);
   }
 }
+
+let initTimeout = null;
+
+function initializePage() {
+  if (initTimeout) clearTimeout(initTimeout);
+  initTimeout = setTimeout(() => {
+    if (handleRedirects()) return;
+    setPageType();
+    setTimeout(addHomePageFooter, 200);
+  }, 50);
+}
+
+// Initial load
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initializePage);
+} else {
+  initializePage();
+}
+
+// YouTube SPA navigation event — fires when YouTube navigates between pages
+window.addEventListener("yt-navigate-finish", () => {
+  console.log("LessTube: SPA navigation detected (yt-navigate-finish)");
+  initializePage();
+});
+
+// Fallback: Lightweight title mutation observer for URL changes
+let lastUrl = location.href;
+const titleObserver = new MutationObserver(() => {
+  if (location.href !== lastUrl) {
+    lastUrl = location.href;
+    console.log("LessTube: URL change detected via title mutation");
+    initializePage();
+  }
+});
+
+function observeTitle() {
+  const titleEl = document.querySelector("title");
+  if (titleEl) {
+    titleObserver.observe(titleEl, { childList: true });
+  } else {
+    setTimeout(observeTitle, 100);
+  }
+}
+observeTitle();
+
+window.addEventListener("popstate", () => {
+  if (location.href !== lastUrl) {
+    lastUrl = location.href;
+    console.log("LessTube: URL change detected via popstate");
+    initializePage();
+  }
+});

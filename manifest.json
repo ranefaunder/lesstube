@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "LessTube",
   "description": "YouTube as a search engine - no recommendations, just search",
-  "version": "1.0.3",
+  "version": "1.1.1",
   "author": "Less Matter",
   "homepage_url": "https://github.com/lessmatter/lesstube",
   
@@ -12,28 +12,20 @@
     "128": "icon-128x128.png"
   },
   
-  "action": {
-    "default_icon": {
-      "16": "icon-16x16.png",
-      "48": "icon-48x48.png",
-      "128": "icon-128x128.png"
-    }
-  },
-  
-  "permissions": [
-    "activeTab"
-  ],
-  
   "host_permissions": [
-    "*://www.youtube.com/*"
+    "*://www.youtube.com/*",
+    "*://m.youtube.com/*"
   ],
   
   "content_scripts": [
     {
-      "matches": ["*://www.youtube.com/*"],
+      "matches": [
+        "*://www.youtube.com/*",
+        "*://m.youtube.com/*"
+      ],
       "js": ["index.js"],
       "css": ["style.css"],
-      "run_at": "document_end"
+      "run_at": "document_start"
     }
   ],
   
