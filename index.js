@@ -91,7 +91,7 @@ function addHomePageFooter() {
     footer.innerHTML = `
         <p style="text-align: center; color: #606060; font-size: 13px;">
             This page has been modified by <a href="https://github.com/ranefaunder/lesstube" target="_blank" style="color: inherit;">LessTube</a> browser extension.<br>
-            Not affiliated with YouTube or Google. Made by <a href="https://bsky.app/profile/faunder.fi" target="_blank" style="color: inherit;">Faunder</a>.
+            Not affiliated with YouTube or Google. Made by <a href="https://faunder.fi" target="_blank" style="color: inherit;">Faunder</a>.
         </p>
     `;
 
