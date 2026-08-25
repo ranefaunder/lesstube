@@ -89,8 +89,9 @@ function addHomePageFooter() {
     const footer = document.createElement("div");
     footer.id = "lesstube-footer";
     footer.innerHTML = `
-        <p style="text-align: center; color: #999; font-size: 12px; margin-top: 32px; font-weight: 500; letter-spacing: 0.5px;">
-            Welcome to LessTube Human.
+        <p style="text-align: center; color: #606060; font-size: 13px;">
+            This page has been modified by <a href="https://github.com/ranefaunder/lesstube" target="_blank" style="color: inherit;">LessTube</a> browser extension.<br>
+            Not affiliated with YouTube or Google. Made by <a href="https://bsky.app/profile/faunder.fi" target="_blank" style="color: inherit;">Faunder</a>.
         </p>
     `;
 
